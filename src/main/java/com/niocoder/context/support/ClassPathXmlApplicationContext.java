@@ -10,7 +10,7 @@ import com.niocoder.core.io.Resource;
  * @email i@merryyou.cn
  * @since 1.0
  */
-public class ClassPathXmlApplicationContext extends AbstractApplicationContext{
+public class ClassPathXmlApplicationContext extends AbstractApplicationContext {
 
 
     public ClassPathXmlApplicationContext(String configFile) {
@@ -19,6 +19,6 @@ public class ClassPathXmlApplicationContext extends AbstractApplicationContext{
 
     @Override
     protected Resource getResourceByPath(String path) {
-        return new ClassPathResource(path);
+        return new ClassPathResource(path, this.getBeanClassLoader());
     }
 }

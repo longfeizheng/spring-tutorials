@@ -2,7 +2,7 @@ package com.niocoder.beans.factory.support;
 
 import com.niocoder.beans.BeanDefinition;
 import com.niocoder.beans.factory.BeanCreationException;
-import com.niocoder.beans.factory.BeanFactory;
+import com.niocoder.beans.factory.config.ConfigurableBeanFactory;
 import com.niocoder.util.ClassUtils;
 
 import java.util.Map;
@@ -15,9 +15,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * @email i@merryyou.cn
  * @since 1.0
  */
-public class DefaultBeanFactory implements BeanFactory, BeanDefinitionRegistry {
+public class DefaultBeanFactory implements ConfigurableBeanFactory, BeanDefinitionRegistry {
 
     private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>();
+
+    private ClassLoader beanClassLoader;
 
     @Override
     public Object getBean(String beanId) {
@@ -25,7 +27,7 @@ public class DefaultBeanFactory implements BeanFactory, BeanDefinitionRegistry {
         if (bd == null) {
             throw new BeanCreationException("Bean Definition does not exist");
         }
-        ClassLoader cl = ClassUtils.getDefaultClassLoader();
+        ClassLoader cl = this.getBeanClassLoader();
 
         String beanClassName = bd.getBeanClassName();
         try {
@@ -43,6 +45,16 @@ public class DefaultBeanFactory implements BeanFactory, BeanDefinitionRegistry {
 
     @Override
     public void registerBeanDefinition(String beanID, BeanDefinition bd) {
-         this.beanDefinitionMap.put(beanID, bd);
+        this.beanDefinitionMap.put(beanID, bd);
+    }
+
+    @Override
+    public void setBeanClassLoader(ClassLoader classLoader) {
+        this.beanClassLoader = classLoader;
+    }
+
+    @Override
+    public ClassLoader getBeanClassLoader() {
+        return (this.beanClassLoader != null ? this.beanClassLoader : ClassUtils.getDefaultClassLoader());
     }
 }
