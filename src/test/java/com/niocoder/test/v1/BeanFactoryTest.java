@@ -1,4 +1,4 @@
-package com.niocoder;
+package com.niocoder.test.v1;
 
 import com.niocoder.beans.BeanDefinition;
 import com.niocoder.beans.factory.BeanCreationException;
