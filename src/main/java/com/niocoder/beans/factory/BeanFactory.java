@@ -1,6 +1,6 @@
 package com.niocoder.beans.factory;
 
-import com.niocoder.beans.BeanDefinition;
+import com.niocoder.beans.factory.support.BeanDefinitionRegistry;
 
 /**
  * Created on 2018/10/29.
@@ -9,9 +9,7 @@ import com.niocoder.beans.BeanDefinition;
  * @email i@merryyou.cn
  * @since 1.0
  */
-public interface BeanFactory {
-
-    BeanDefinition getBeanDefinition(String beanId);
+public interface BeanFactory extends BeanDefinitionRegistry {
 
     Object getBean(String beanId);
 }
