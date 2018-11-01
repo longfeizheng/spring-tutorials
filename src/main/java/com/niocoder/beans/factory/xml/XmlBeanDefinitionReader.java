@@ -4,6 +4,7 @@ import com.niocoder.beans.BeanDefinition;
 import com.niocoder.beans.factory.BeanDefinitionStoreException;
 import com.niocoder.beans.factory.support.BeanDefinitionRegistry;
 import com.niocoder.beans.factory.support.GenericBeanDefinition;
+import com.niocoder.core.io.Resource;
 import com.niocoder.util.ClassUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -31,9 +32,9 @@ public class XmlBeanDefinitionReader {
         this.registry = registry;
     }
 
-    public void loadBeanDefinition(String configFile) {
+    public void loadBeanDefinition(Resource resource) {
         ClassLoader cl = ClassUtils.getDefaultClassLoader();
-        try (InputStream is = cl.getResourceAsStream(configFile)) {
+        try (InputStream is = resource.getInputStream()) {
             SAXReader reader = new SAXReader();
             Document doc = reader.read(is);
 

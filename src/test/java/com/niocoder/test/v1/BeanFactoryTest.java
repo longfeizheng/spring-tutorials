@@ -5,6 +5,7 @@ import com.niocoder.beans.factory.BeanCreationException;
 import com.niocoder.beans.factory.BeanDefinitionStoreException;
 import com.niocoder.beans.factory.support.DefaultBeanFactory;
 import com.niocoder.beans.factory.xml.XmlBeanDefinitionReader;
+import com.niocoder.core.io.ClassPathResource;
 import com.niocoder.service.v1.NioCoderService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -36,7 +37,7 @@ public class BeanFactoryTest {
     public void testGetBean() {
 
 
-        reader.loadBeanDefinition("niocoder-v1.xml");
+        reader.loadBeanDefinition(new ClassPathResource("niocoder-v1.xml"));
 
         BeanDefinition bd = factory.getBeanDefinition("nioCoder");
 
@@ -49,7 +50,7 @@ public class BeanFactoryTest {
 
     @Test
     public void testInvalidBean() {
-        reader.loadBeanDefinition("niocoder-v1.xml");
+        reader.loadBeanDefinition(new ClassPathResource("niocoder-v1.xml"));
 
         try {
             factory.getBean("invalidBean");
@@ -63,7 +64,7 @@ public class BeanFactoryTest {
     @Test
     public void testInvalidXML() {
         try {
-            reader.loadBeanDefinition("xxx.xml");
+            reader.loadBeanDefinition(new ClassPathResource("xxx-v1.xml"));
         } catch (BeanDefinitionStoreException e) {
             return;
         }
