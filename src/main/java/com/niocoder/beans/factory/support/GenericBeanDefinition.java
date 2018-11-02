@@ -1,6 +1,10 @@
 package com.niocoder.beans.factory.support;
 
 import com.niocoder.beans.BeanDefinition;
+import com.niocoder.beans.PropertyValue;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created on 2018/10/29.
@@ -16,6 +20,8 @@ public class GenericBeanDefinition implements BeanDefinition {
     private boolean singleton = true;
     private boolean prototype = false;
     private String scope = SCOPE_DEFAULT;
+
+    List<PropertyValue> propertyValues = new ArrayList<>();
 
     public GenericBeanDefinition(String id, String beanClassName) {
         this.id = id;
@@ -46,5 +52,10 @@ public class GenericBeanDefinition implements BeanDefinition {
 
     public String getBeanClassName() {
         return this.beanClassName;
+    }
+
+    @Override
+    public List<PropertyValue> getPropertyValues() {
+        return this.propertyValues;
     }
 }

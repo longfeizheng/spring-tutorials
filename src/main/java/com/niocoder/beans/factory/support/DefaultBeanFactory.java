@@ -1,10 +1,15 @@
 package com.niocoder.beans.factory.support;
 
 import com.niocoder.beans.BeanDefinition;
+import com.niocoder.beans.PropertyValue;
 import com.niocoder.beans.factory.BeanCreationException;
 import com.niocoder.beans.factory.config.ConfigurableBeanFactory;
 import com.niocoder.util.ClassUtils;
 
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -25,13 +30,13 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
     @Override
     public Object getBean(String beanId) {
         BeanDefinition bd = this.getBeanDefinition(beanId);
-        if(bd == null){
+        if (bd == null) {
             return null;
         }
 
-        if(bd.isSingleton()){
+        if (bd.isSingleton()) {
             Object bean = this.getSingleton(beanId);
-            if(bean == null){
+            if (bean == null) {
                 bean = createBean(bd);
                 this.registerSingleton(beanId, bean);
             }
@@ -39,14 +44,51 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
         }
         return createBean(bd);
     }
-    private Object createBean(BeanDefinition bd) {
+
+    private Object instantiateBean(BeanDefinition bd) {
         ClassLoader cl = this.getBeanClassLoader();
         String beanClassName = bd.getBeanClassName();
         try {
             Class<?> clz = cl.loadClass(beanClassName);
             return clz.newInstance();
         } catch (Exception e) {
-            throw new BeanCreationException("create bean for "+ beanClassName +" failed",e);
+            throw new BeanCreationException("create bean for " + beanClassName + " failed", e);
+        }
+    }
+
+    private Object createBean(BeanDefinition bd) {
+        // 创建实例
+        Object bean = instantiateBean(bd);
+        populateBean(bd, bean);
+        // 设置属性
+        return bean;
+    }
+
+    protected void populateBean(BeanDefinition bd, Object bean) {
+        List<PropertyValue> pvs = bd.getPropertyValues();
+
+        if (pvs == null || pvs.isEmpty()) {
+            return;
+        }
+
+        BeanDefinitionValueResolver valueResolver = new BeanDefinitionValueResolver(this);
+        try {
+            for (PropertyValue pv : pvs) {
+                String propertyName = pv.getName();
+                Object originalValue = pv.getValue();
+                Object resolvedValue = valueResolver.resolveValueIfNecessary(originalValue);
+                // set 注入 使用java BeanInfo 实现
+                BeanInfo beanInfo = Introspector.getBeanInfo(bean.getClass());
+                PropertyDescriptor[] pds = beanInfo.getPropertyDescriptors();
+                for (PropertyDescriptor pd : pds) {
+                    if (pd.getName().equals(propertyName)) {
+                        pd.getWriteMethod().invoke(bean, resolvedValue);
+                        break;
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            throw new BeanCreationException("Failed to obtain BeanInfo for class [" + bd.getBeanClassName() + "]", ex);
         }
     }
 

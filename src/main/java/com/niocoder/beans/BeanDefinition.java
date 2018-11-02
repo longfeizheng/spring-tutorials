@@ -1,5 +1,7 @@
 package com.niocoder.beans;
 
+import java.util.List;
+
 /**
  * Created on 2018/10/29.
  *
@@ -23,4 +25,5 @@ public interface BeanDefinition {
 
     String getBeanClassName();
 
+    List<PropertyValue> getPropertyValues();
 }
