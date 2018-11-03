@@ -4,6 +4,9 @@
           class="com.niocoder.service.v2.NioCoderService">
         <property name="accountDao" ref="accountDao"/>
         <property name="itemDao" ref="itemDao"/>
+        <property name="owner" value="nioCoder"/>
+        <property name="version" value="3"/>
+        <property name="flag" value="on"/>
     </bean>
 
     <bean id="accountDao"

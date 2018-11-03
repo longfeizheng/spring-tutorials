@@ -30,7 +30,7 @@ public class BeanDefinitionTestV2 {
         BeanDefinition bd = factory.getBeanDefinition("nioCoder");
 
         List<PropertyValue> pvs = bd.getPropertyValues();
-        Assert.assertTrue(pvs.size() == 2);
+        Assert.assertTrue(pvs.size() == 5);
         {
             PropertyValue pv = this.getPropertyValues("accountDao", pvs);
             Assert.assertNotNull(pv);

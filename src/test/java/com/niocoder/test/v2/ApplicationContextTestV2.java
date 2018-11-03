@@ -8,6 +8,7 @@ import com.niocoder.service.v2.NioCoderService;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -26,9 +27,13 @@ public class ApplicationContextTestV2 {
 
         Assert.assertNotNull(nioCoderService.getAccountDao());
         Assert.assertNotNull(nioCoderService.getItemDao());
+        Assert.assertNotNull(nioCoderService.getOwner());
 
         assertTrue(nioCoderService.getItemDao() instanceof ItemDao);
         assertTrue(nioCoderService.getAccountDao() instanceof AccountDao);
+        assertEquals(nioCoderService.getOwner(), "nioCoder");
+        assertEquals(nioCoderService.getVersion(), 3);
+        assertTrue(nioCoderService.isFlag());
 
     }
 

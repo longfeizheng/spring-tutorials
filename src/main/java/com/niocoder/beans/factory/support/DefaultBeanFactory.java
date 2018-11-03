@@ -2,6 +2,7 @@ package com.niocoder.beans.factory.support;
 
 import com.niocoder.beans.BeanDefinition;
 import com.niocoder.beans.PropertyValue;
+import com.niocoder.beans.SimpleTypeConverter;
 import com.niocoder.beans.factory.BeanCreationException;
 import com.niocoder.beans.factory.config.ConfigurableBeanFactory;
 import com.niocoder.util.ClassUtils;
@@ -72,6 +73,7 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
         }
 
         BeanDefinitionValueResolver valueResolver = new BeanDefinitionValueResolver(this);
+        SimpleTypeConverter converter = new SimpleTypeConverter();
         try {
             for (PropertyValue pv : pvs) {
                 String propertyName = pv.getName();
@@ -82,7 +84,8 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
                 PropertyDescriptor[] pds = beanInfo.getPropertyDescriptors();
                 for (PropertyDescriptor pd : pds) {
                     if (pd.getName().equals(propertyName)) {
-                        pd.getWriteMethod().invoke(bean, resolvedValue);
+                        Object convertedValue = converter.convertIfNecessary(resolvedValue, pd.getPropertyType());
+                        pd.getWriteMethod().invoke(bean, convertedValue);
                         break;
                     }
                 }

@@ -14,6 +14,33 @@ public class NioCoderService {
 
     private AccountDao accountDao;
     private ItemDao itemDao;
+    private String owner;
+    private int version;
+    private boolean flag;
+
+    public boolean isFlag() {
+        return flag;
+    }
+
+    public void setFlag(boolean flag) {
+        this.flag = flag;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
 
     public AccountDao getAccountDao() {
         return accountDao;
