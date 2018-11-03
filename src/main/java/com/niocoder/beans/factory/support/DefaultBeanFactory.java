@@ -6,6 +6,7 @@ import com.niocoder.beans.SimpleTypeConverter;
 import com.niocoder.beans.factory.BeanCreationException;
 import com.niocoder.beans.factory.config.ConfigurableBeanFactory;
 import com.niocoder.util.ClassUtils;
+import org.apache.commons.beanutils.BeanUtils;
 
 import java.beans.BeanInfo;
 import java.beans.Introspector;
@@ -60,7 +61,8 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
     private Object createBean(BeanDefinition bd) {
         // 创建实例
         Object bean = instantiateBean(bd);
-        populateBean(bd, bean);
+//        populateBean(bd, bean);
+        populateBeanUseCommonBeanUtils(bd, bean);
         // 设置属性
         return bean;
     }
@@ -93,6 +95,27 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
         } catch (Exception ex) {
             throw new BeanCreationException("Failed to obtain BeanInfo for class [" + bd.getBeanClassName() + "]", ex);
         }
+    }
+
+    private void populateBeanUseCommonBeanUtils(BeanDefinition bd, Object bean) {
+        List<PropertyValue> pvs = bd.getPropertyValues();
+
+        if (pvs == null || pvs.isEmpty()) {
+            return;
+        }
+
+        BeanDefinitionValueResolver valueResolver = new BeanDefinitionValueResolver(this);
+        try {
+            for (PropertyValue pv : pvs) {
+                String propertyName = pv.getName();
+                Object originalValue = pv.getValue();
+                Object resolvedValue = valueResolver.resolveValueIfNecessary(originalValue);
+                BeanUtils.setProperty(bean, propertyName, resolvedValue);
+            }
+        } catch (Exception ex) {
+            throw new BeanCreationException("Failed to obtain BeanInfo for class [" + bd.getBeanClassName() + "]", ex);
+        }
+
     }
 
     @Override
