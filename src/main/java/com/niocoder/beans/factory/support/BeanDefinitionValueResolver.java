@@ -1,5 +1,6 @@
 package com.niocoder.beans.factory.support;
 
+import com.niocoder.beans.factory.BeanFactory;
 import com.niocoder.beans.factory.config.RuntimeBeanReference;
 import com.niocoder.beans.factory.config.TypedStringValue;
 
@@ -12,9 +13,9 @@ import com.niocoder.beans.factory.config.TypedStringValue;
  */
 public class BeanDefinitionValueResolver {
 
-    private final DefaultBeanFactory beanFactory;
+    private final BeanFactory beanFactory;
 
-    public BeanDefinitionValueResolver(DefaultBeanFactory beanFactory) {
+    public BeanDefinitionValueResolver(BeanFactory beanFactory) {
         this.beanFactory = beanFactory;
     }
 
