@@ -17,7 +17,7 @@ public class PackageResourceLoaderTest {
     @Test
     public void testGetResources() throws Exception {
         PackageResourceLoader loader = new PackageResourceLoader();
-        Resource[] resources = loader.getResource("com.niocoder.dao.v4");
+        Resource[] resources = loader.getResources("com.niocoder.dao.v4");
         Assert.assertEquals(2, resources.length);
     }
 }

@@ -2,8 +2,8 @@ package com.niocoder.core.type.classreading;
 
 import com.niocoder.core.annotation.AnnotationAttributes;
 import com.niocoder.core.type.AnnotationMetadata;
-import jdk.internal.org.objectweb.asm.AnnotationVisitor;
 import jdk.internal.org.objectweb.asm.Type;
+import org.springframework.asm.AnnotationVisitor;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;

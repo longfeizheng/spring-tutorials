@@ -34,7 +34,7 @@ public class PackageResourceLoader {
         this.classLoader = classLoader;
     }
 
-    public Resource[] getResource(String basePackage) throws IOException {
+    public Resource[] getResources(String basePackage) throws IOException {
         Assert.notNull(basePackage, "basepackage must not be null");
         String location = ClassUtils.convertClassNameToResourcePath(basePackage);
         ClassLoader cl = getClassLoader();

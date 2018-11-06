@@ -4,9 +4,9 @@ import com.niocoder.core.annotation.AnnotationAttributes;
 import com.niocoder.core.io.ClassPathResource;
 import com.niocoder.core.type.classreading.AnnotationMetadataReadingVisitor;
 import com.niocoder.core.type.classreading.ClassMetadataReadingVisitor;
-import jdk.internal.org.objectweb.asm.ClassReader;
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.asm.ClassReader;
 
 /**
  * Created on 2018/11/4.

@@ -1,7 +1,7 @@
 package com.niocoder.core.type.classreading;
 
 import com.niocoder.core.annotation.AnnotationAttributes;
-import jdk.internal.org.objectweb.asm.AnnotationVisitor;
+import org.springframework.asm.AnnotationVisitor;
 import org.springframework.asm.SpringAsmInfo;
 
 import java.util.Map;

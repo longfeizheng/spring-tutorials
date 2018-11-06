@@ -1,10 +1,9 @@
 package com.niocoder.core.type.classreading;
 
-import com.niocoder.core.io.ClassPathResource;
 import com.niocoder.core.io.Resource;
 import com.niocoder.core.type.AnnotationMetadata;
 import com.niocoder.core.type.ClassMetadata;
-import jdk.internal.org.objectweb.asm.ClassReader;
+import org.springframework.asm.ClassReader;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -25,13 +24,14 @@ public class SimpleMetadataReader implements MetadataReader {
 
     private final AnnotationMetadata annotationMetadata;
 
-    public SimpleMetadataReader(ClassPathResource resource) throws IOException {
+    public SimpleMetadataReader(Resource resource) throws IOException {
         InputStream is = new BufferedInputStream(resource.getInputStream());
-        ClassReader classReader;
+        org.springframework.asm.ClassReader classReader;
 
         try {
             classReader = new ClassReader(is);
-        } finally {
+        }
+        finally {
             is.close();
         }
 

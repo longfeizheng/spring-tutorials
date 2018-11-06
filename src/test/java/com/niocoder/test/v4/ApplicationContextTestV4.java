@@ -18,7 +18,7 @@ public class ApplicationContextTestV4 {
 
     @Test
     public void testGetBeanProperty() {
-        ApplicationContext ctx = new ClassPathXmlApplicationContext("petstore-v4.xml");
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("niocoder-v4.xml");
         NioCoderService nioCoder = (NioCoderService) ctx.getBean("nioCoder");
 
         Assert.assertNotNull(nioCoder.getAccountDao());

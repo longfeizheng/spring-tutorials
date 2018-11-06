@@ -2,8 +2,8 @@ package com.niocoder.core.type.classreading;
 
 import com.niocoder.core.type.ClassMetadata;
 import com.niocoder.util.ClassUtils;
-import jdk.internal.org.objectweb.asm.ClassVisitor;
-import jdk.internal.org.objectweb.asm.Opcodes;
+import org.springframework.asm.ClassVisitor;
+import org.springframework.asm.Opcodes;
 import org.springframework.asm.SpringAsmInfo;
 
 /**
@@ -32,7 +32,7 @@ public class ClassMetadataReadingVisitor extends ClassVisitor implements ClassMe
     }
 
     public void visit(int version, int access, String name, String signature, String supername, String[] interfaces) {
-        this.className = ClassUtils.convertClassNameToResourcePath(name);
+        this.className = ClassUtils.convertResourcePathToClassName(name);
         this.isInterface = ((access & Opcodes.ACC_INTERFACE) != 0);
         this.isAbstract = ((access & Opcodes.ACC_ABSTRACT) != 0);
         this.isFinal = ((access & Opcodes.ACC_FINAL) != 0);
