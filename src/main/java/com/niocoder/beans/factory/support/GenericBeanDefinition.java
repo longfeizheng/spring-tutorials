@@ -30,6 +30,9 @@ public class GenericBeanDefinition implements BeanDefinition {
         this.beanClassName = beanClassName;
     }
 
+    public GenericBeanDefinition() {
+    }
+
     @Override
     public boolean isSingleton() {
         return this.singleton;
@@ -52,6 +55,10 @@ public class GenericBeanDefinition implements BeanDefinition {
         this.prototype = SCOPE_PROTOTYPE.equals(scope);
     }
 
+    public void setBeanClassName(String className) {
+        this.beanClassName = className;
+    }
+
     public String getBeanClassName() {
         return this.beanClassName;
     }
@@ -64,6 +71,10 @@ public class GenericBeanDefinition implements BeanDefinition {
     @Override
     public ConstructorArgument getConstructorArgument() {
         return this.constructorArgument;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override
