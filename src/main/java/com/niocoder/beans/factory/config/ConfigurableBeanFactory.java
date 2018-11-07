@@ -1,7 +1,5 @@
 package com.niocoder.beans.factory.config;
 
-import com.niocoder.beans.factory.BeanFactory;
-
 /**
  * Created on 2018/11/1.
  *
@@ -9,7 +7,7 @@ import com.niocoder.beans.factory.BeanFactory;
  * @email i@merryyou.cn
  * @since 1.0
  */
-public interface ConfigurableBeanFactory extends BeanFactory {
+public interface ConfigurableBeanFactory extends AutowireCapableBeanFactory {
 
     void setBeanClassLoader(ClassLoader classLoader);
 

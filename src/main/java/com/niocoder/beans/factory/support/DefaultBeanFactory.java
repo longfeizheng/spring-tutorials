@@ -5,6 +5,7 @@ import com.niocoder.beans.PropertyValue;
 import com.niocoder.beans.SimpleTypeConverter;
 import com.niocoder.beans.factory.BeanCreationException;
 import com.niocoder.beans.factory.config.ConfigurableBeanFactory;
+import com.niocoder.beans.factory.config.DependencyDescriptor;
 import com.niocoder.util.ClassUtils;
 import org.apache.commons.beanutils.BeanUtils;
 
@@ -48,10 +49,10 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
     }
 
     private Object instantiateBean(BeanDefinition bd) {
-        if(bd.hasConstructorArgumentValues()){
+        if (bd.hasConstructorArgumentValues()) {
             ConstructorResolver resolver = new ConstructorResolver(this);
             return resolver.autowireConstructor(bd);
-        }else{
+        } else {
             ClassLoader cl = this.getBeanClassLoader();
             String beanClassName = bd.getBeanClassName();
             try {
@@ -142,5 +143,31 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
     @Override
     public ClassLoader getBeanClassLoader() {
         return (this.beanClassLoader != null ? this.beanClassLoader : ClassUtils.getDefaultClassLoader());
+    }
+
+    @Override
+    public Object resolveDependency(DependencyDescriptor descriptor) {
+        Class<?> typeToMatch = descriptor.getDependencyType();
+        for (BeanDefinition bd : this.beanDefinitionMap.values()) {
+            // 确保BeanDefinition 有Class对象
+            resolveBeanClass(bd);
+            Class<?> beanClass = bd.getBeanClass();
+            if (typeToMatch.isAssignableFrom(beanClass)) {
+                return this.getBean(bd.getID());
+            }
+        }
+        return null;
+    }
+
+    public void resolveBeanClass(BeanDefinition bd) {
+        if (bd.hasBeanClass()) {
+            return;
+        } else {
+            try {
+                bd.resolveBeanClass(this.getBeanClassLoader());
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException("can't load class" + bd.getBeanClassName());
+            }
+        }
     }
 }
