@@ -28,7 +28,7 @@ public class ClassReaderTest {
         Assert.assertFalse(visiter.isAbstract());
         Assert.assertFalse(visiter.isInterface());
         Assert.assertFalse(visiter.isFinal());
-        Assert.assertEquals("com/niocoder/service/v4/NioCoderService", visiter.getClassName());
+        Assert.assertEquals("com.niocoder.service.v4.NioCoderService", visiter.getClassName());
         Assert.assertEquals("java.lang.Object", visiter.getSuperClassName());
         Assert.assertEquals(0, visiter.getInterfaces().length);
 

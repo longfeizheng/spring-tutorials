@@ -32,4 +32,10 @@ public interface BeanDefinition {
     String getID();
 
     boolean hasConstructorArgumentValues();
+
+    Class<?> getBeanClass();
+
+    boolean hasBeanClass();
+
+    Class<?>  resolveBeanClass(ClassLoader beanClassLoader) throws ClassNotFoundException;
 }

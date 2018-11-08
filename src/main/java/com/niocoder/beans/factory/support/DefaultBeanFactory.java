@@ -4,13 +4,17 @@ import com.niocoder.beans.BeanDefinition;
 import com.niocoder.beans.PropertyValue;
 import com.niocoder.beans.SimpleTypeConverter;
 import com.niocoder.beans.factory.BeanCreationException;
+import com.niocoder.beans.factory.config.BeanPostProcessor;
 import com.niocoder.beans.factory.config.ConfigurableBeanFactory;
+import com.niocoder.beans.factory.config.DependencyDescriptor;
+import com.niocoder.beans.factory.config.InstantiationAwareBeanPostProcessor;
 import com.niocoder.util.ClassUtils;
 import org.apache.commons.beanutils.BeanUtils;
 
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,6 +28,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
         implements ConfigurableBeanFactory, BeanDefinitionRegistry {
+
+    private List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
 
     private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>();
 
@@ -48,10 +54,10 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
     }
 
     private Object instantiateBean(BeanDefinition bd) {
-        if(bd.hasConstructorArgumentValues()){
+        if (bd.hasConstructorArgumentValues()) {
             ConstructorResolver resolver = new ConstructorResolver(this);
             return resolver.autowireConstructor(bd);
-        }else{
+        } else {
             ClassLoader cl = this.getBeanClassLoader();
             String beanClassName = bd.getBeanClassName();
             try {
@@ -67,13 +73,20 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
     private Object createBean(BeanDefinition bd) {
         // 创建实例
         Object bean = instantiateBean(bd);
-//        populateBean(bd, bean);
-        populateBeanUseCommonBeanUtils(bd, bean);
+        populateBean(bd, bean);
+//        populateBeanUseCommonBeanUtils(bd, bean);
         // 设置属性
         return bean;
     }
 
     protected void populateBean(BeanDefinition bd, Object bean) {
+
+        for (BeanPostProcessor postProcessor : this.getBeanPostProcessors()) {
+            if (postProcessor instanceof InstantiationAwareBeanPostProcessor) {
+                ((InstantiationAwareBeanPostProcessor) postProcessor).postProcessPropertyValues(bean, bd.getID());
+            }
+        }
+
         List<PropertyValue> pvs = bd.getPropertyValues();
 
         if (pvs == null || pvs.isEmpty()) {
@@ -142,5 +155,41 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
     @Override
     public ClassLoader getBeanClassLoader() {
         return (this.beanClassLoader != null ? this.beanClassLoader : ClassUtils.getDefaultClassLoader());
+    }
+
+    @Override
+    public void addBeanPostProcessor(BeanPostProcessor postProcessor) {
+        this.beanPostProcessors.add(postProcessor);
+    }
+
+    @Override
+    public List<BeanPostProcessor> getBeanPostProcessors() {
+        return this.beanPostProcessors;
+    }
+
+    @Override
+    public Object resolveDependency(DependencyDescriptor descriptor) {
+        Class<?> typeToMatch = descriptor.getDependencyType();
+        for (BeanDefinition bd : this.beanDefinitionMap.values()) {
+            // 确保BeanDefinition 有Class对象
+            resolveBeanClass(bd);
+            Class<?> beanClass = bd.getBeanClass();
+            if (typeToMatch.isAssignableFrom(beanClass)) {
+                return this.getBean(bd.getID());
+            }
+        }
+        return null;
+    }
+
+    public void resolveBeanClass(BeanDefinition bd) {
+        if (bd.hasBeanClass()) {
+            return;
+        } else {
+            try {
+                bd.resolveBeanClass(this.getBeanClassLoader());
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException("can't load class" + bd.getBeanClassName());
+            }
+        }
     }
 }

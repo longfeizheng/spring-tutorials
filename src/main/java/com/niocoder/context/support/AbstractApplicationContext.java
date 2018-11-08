@@ -1,5 +1,7 @@
 package com.niocoder.context.support;
 
+import com.niocoder.beans.factory.annotation.AutowiredAnnotationProcessor;
+import com.niocoder.beans.factory.config.ConfigurableBeanFactory;
 import com.niocoder.beans.factory.support.DefaultBeanFactory;
 import com.niocoder.beans.factory.xml.XmlBeanDefinitionReader;
 import com.niocoder.context.ApplicationContext;
@@ -24,6 +26,7 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         Resource resource = this.getResourceByPath(configFile);
         reader.loadBeanDefinition(resource);
         factory.setBeanClassLoader(cl);
+        registerBeanPostProcessors(factory);
     }
 
     public AbstractApplicationContext(String configFile) {
@@ -37,13 +40,17 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
 
     protected abstract Resource getResourceByPath(String path);
 
-    @Override
     public void setBeanClassLoader(ClassLoader classLoader) {
         this.beanClassLoader = classLoader;
     }
 
-    @Override
     public ClassLoader getBeanClassLoader() {
         return (this.beanClassLoader != null ? this.beanClassLoader : ClassUtils.getDefaultClassLoader());
+    }
+
+    protected void registerBeanPostProcessors(ConfigurableBeanFactory beanFactory){
+        AutowiredAnnotationProcessor processor = new AutowiredAnnotationProcessor();
+        processor.setBeanFactory(beanFactory);
+        beanFactory.addBeanPostProcessor(processor);
     }
 }
