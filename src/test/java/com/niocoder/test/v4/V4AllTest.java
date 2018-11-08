@@ -15,7 +15,11 @@ import org.junit.runners.Suite;
         ApplicationContextTestV4.class,
         ClassReaderTest.class,
         PackageResourceLoaderTest.class,
-        MetadataReaderTest.class
+        MetadataReaderTest.class,
+        AutowiredAnnotationProcessorTest.class,
+        InjectionMetadataTest.class,
+        ApplicationContextTestV4.class,
+        XmlBeanDefinitionReaderTest.class
 })
 public class V4AllTest {
 }
