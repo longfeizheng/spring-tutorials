@@ -4,6 +4,7 @@ import com.niocoder.beans.BeanDefinition;
 import com.niocoder.beans.PropertyValue;
 import com.niocoder.beans.SimpleTypeConverter;
 import com.niocoder.beans.factory.BeanCreationException;
+import com.niocoder.beans.factory.NoSuchBeanDefinitionException;
 import com.niocoder.beans.factory.config.BeanPostProcessor;
 import com.niocoder.beans.factory.config.ConfigurableBeanFactory;
 import com.niocoder.beans.factory.config.DependencyDescriptor;
@@ -51,6 +52,16 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
             return bean;
         }
         return createBean(bd);
+    }
+
+    @Override
+    public Class<?> getType(String name) throws NoSuchBeanDefinitionException {
+        BeanDefinition bd = this.getBeanDefinition(name);
+        if (bd == null) {
+            throw new NoSuchBeanDefinitionException(name);
+        }
+        resolveBeanClass(bd);
+        return bd.getBeanClass();
     }
 
     private Object instantiateBean(BeanDefinition bd) {
