@@ -29,11 +29,11 @@ public class ApplicationContextTest5 {
         nioCoder.placeOrder();
 
         //
-        List<String> msg = MessageTracker.getMsgs();
+        List<String> msgs = MessageTracker.getMsgs();
 
-        Assert.assertEquals(3, msg.size());
-        Assert.assertEquals("start tx", msg.get(0));
-        Assert.assertEquals("place order", msg.get(1));
-        Assert.assertEquals("commit tx", msg.get(2));
+        Assert.assertEquals(3, msgs.size());
+        Assert.assertEquals("start tx", msgs.get(0));
+        Assert.assertEquals("place order", msgs.get(1));
+        Assert.assertEquals("commit tx", msgs.get(2));
     }
 }
