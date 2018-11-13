@@ -42,6 +42,13 @@
             <systemPath>${project.basedir}/libs/spring-core-asm-3.2.18.RELEASE.jar</systemPath>
         </dependency>
         <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core-cglib</artifactId>
+            <version>3.2.18.RELEASE</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/spring-core-cglib-3.2.18.RELEASE.jar</systemPath>
+        </dependency>
+        <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
             <version>1.8.13</version>
