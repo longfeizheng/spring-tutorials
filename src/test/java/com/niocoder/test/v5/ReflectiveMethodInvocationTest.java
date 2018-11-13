@@ -1,6 +1,7 @@
 package com.niocoder.test.v5;
 
 import com.niocoder.aop.aspectj.AspectJAfterReturningAdvice;
+import com.niocoder.aop.aspectj.AspectJAfterThrowingAdvice;
 import com.niocoder.aop.aspectj.AspectJBeforeAdvice;
 import com.niocoder.aop.framework.ReflectiveMethodInvocation;
 import com.niocoder.service.v5.NioCoderService;
@@ -81,6 +82,7 @@ public class ReflectiveMethodInvocationTest {
             Assert.assertEquals(2, msgs.size());
             Assert.assertEquals("start tx", msgs.get(0));
             Assert.assertEquals("rollback tx", msgs.get(1));
+            return;
         }
 
         Assert.fail("No Exception thrown");

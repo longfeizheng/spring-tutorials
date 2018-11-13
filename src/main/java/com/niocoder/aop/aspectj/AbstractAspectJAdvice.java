@@ -2,7 +2,6 @@ package com.niocoder.aop.aspectj;
 
 import com.niocoder.aop.Advice;
 import com.niocoder.aop.Pointcut;
-import org.aopalliance.intercept.MethodInvocation;
 
 import java.lang.reflect.Method;
 
@@ -13,13 +12,13 @@ import java.lang.reflect.Method;
  * @email i@merryyou.cn
  * @since 1.0
  */
-public class AbstractAspectJAdvice implements Advice {
+public abstract class AbstractAspectJAdvice implements Advice {
 
     private Method adviceMethod;
-    private Pointcut pointcut;
+    private AspectJExpressionPointcut pointcut;
     private Object adviceObject;
 
-    public AbstractAspectJAdvice(Method adviceMethod, Pointcut pointcut, Object adviceObject) {
+    public AbstractAspectJAdvice(Method adviceMethod, AspectJExpressionPointcut pointcut, Object adviceObject) {
         this.adviceMethod = adviceMethod;
         this.pointcut = pointcut;
         this.adviceObject = adviceObject;
@@ -30,8 +29,11 @@ public class AbstractAspectJAdvice implements Advice {
         return pointcut;
     }
 
-    @Override
-    public Object invoke(MethodInvocation invocation) throws Throwable {
-        return null;
+    public Method getAdviceMethod() {
+        return this.adviceMethod;
+    }
+
+    public void invokeAdviceMethod() throws Throwable {
+        adviceMethod.invoke(adviceObject);
     }
 }

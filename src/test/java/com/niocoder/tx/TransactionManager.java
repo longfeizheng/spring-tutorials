@@ -30,5 +30,6 @@ public class TransactionManager {
 
     public void rollback() {
         System.out.println("rollback tx");
+        MessageTracker.addMsg("rollback tx");
     }
 }
