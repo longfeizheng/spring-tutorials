@@ -1,5 +1,7 @@
 package com.niocoder.beans.factory;
 
+import java.util.List;
+
 /**
  * Created on 2018/10/29.
  *
@@ -12,4 +14,7 @@ public interface BeanFactory {
     Object getBean(String beanId);
 
     Class<?> getType(String name) throws NoSuchBeanDefinitionException;
+
+    List<Object> getBeansByType(Class<?> type);
+
 }

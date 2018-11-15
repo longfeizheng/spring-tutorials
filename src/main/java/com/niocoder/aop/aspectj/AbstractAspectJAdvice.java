@@ -2,6 +2,7 @@ package com.niocoder.aop.aspectj;
 
 import com.niocoder.aop.Advice;
 import com.niocoder.aop.Pointcut;
+import com.niocoder.aop.config.AspectInstanceFactory;
 
 import java.lang.reflect.Method;
 
@@ -16,12 +17,13 @@ public abstract class AbstractAspectJAdvice implements Advice {
 
     private Method adviceMethod;
     private AspectJExpressionPointcut pointcut;
-    private Object adviceObject;
+    //    private Object adviceObject;
+    private AspectInstanceFactory adviceObjectFactory;
 
-    public AbstractAspectJAdvice(Method adviceMethod, AspectJExpressionPointcut pointcut, Object adviceObject) {
+    public AbstractAspectJAdvice(Method adviceMethod, AspectJExpressionPointcut pointcut, AspectInstanceFactory adviceObjectFactory) {
         this.adviceMethod = adviceMethod;
         this.pointcut = pointcut;
-        this.adviceObject = adviceObject;
+        this.adviceObjectFactory = adviceObjectFactory;
     }
 
     @Override
@@ -34,6 +36,10 @@ public abstract class AbstractAspectJAdvice implements Advice {
     }
 
     public void invokeAdviceMethod() throws Throwable {
-        adviceMethod.invoke(adviceObject);
+        adviceMethod.invoke(adviceObjectFactory.getAspectInstance());
+    }
+
+    public Object getAdviceInstance() throws Exception {
+        return adviceObjectFactory.getAspectInstance();
     }
 }

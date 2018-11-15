@@ -12,8 +12,13 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    MethodLocatingFactoryTest.class,
-        PointcutTest.class
+        MethodLocatingFactoryTest.class,
+        PointcutTest.class,
+        BeanDefinitionTestV5.class,
+        BeanFactoryTest5.class,
+        CglibAopProxyTest.class,
+        ReflectiveMethodInvocationTest.class,
+        ApplicationContextTest5.class
 })
 public class V5AllTest {
 }
