@@ -1,5 +1,6 @@
 package com.niocoder.context.support;
 
+import com.niocoder.aop.aspectj.AspectJAutoProxyCreator;
 import com.niocoder.beans.factory.NoSuchBeanDefinitionException;
 import com.niocoder.beans.factory.annotation.AutowiredAnnotationProcessor;
 import com.niocoder.beans.factory.config.ConfigurableBeanFactory;
@@ -8,6 +9,8 @@ import com.niocoder.beans.factory.xml.XmlBeanDefinitionReader;
 import com.niocoder.context.ApplicationContext;
 import com.niocoder.core.io.Resource;
 import com.niocoder.util.ClassUtils;
+
+import java.util.List;
 
 /**
  * Created on 2018/11/1.
@@ -50,12 +53,24 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
     }
 
     protected void registerBeanPostProcessors(ConfigurableBeanFactory beanFactory) {
-        AutowiredAnnotationProcessor processor = new AutowiredAnnotationProcessor();
-        processor.setBeanFactory(beanFactory);
-        beanFactory.addBeanPostProcessor(processor);
+        {
+            AutowiredAnnotationProcessor postProcessor = new AutowiredAnnotationProcessor();
+            postProcessor.setBeanFactory(beanFactory);
+            beanFactory.addBeanPostProcessor(postProcessor);
+        }
+        {
+            AspectJAutoProxyCreator postProcessor = new AspectJAutoProxyCreator();
+            postProcessor.setBeanFactory(beanFactory);
+            beanFactory.addBeanPostProcessor(postProcessor);
+        }
+
     }
 
     public Class<?> getType(String name) throws NoSuchBeanDefinitionException {
         return this.factory.getType(name);
+    }
+
+    public List<Object> getBeansByType(Class<?> type) {
+        return this.factory.getBeansByType(type);
     }
 }

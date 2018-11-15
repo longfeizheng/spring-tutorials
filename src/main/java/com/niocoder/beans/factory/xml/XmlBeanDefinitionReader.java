@@ -1,5 +1,6 @@
 package com.niocoder.beans.factory.xml;
 
+import com.niocoder.aop.config.ConfigBeanDefinitionParser;
 import com.niocoder.beans.BeanDefinition;
 import com.niocoder.beans.ConstructorArgument;
 import com.niocoder.beans.PropertyValue;
@@ -51,6 +52,8 @@ public class XmlBeanDefinitionReader {
 
     public static final String CONTEXT_NAMESPACE_URI = "http://www.springframework.org/schema/context";
 
+    public static final String AOP_NAMESPACE_URI = "http://www.springframework.org/schema/aop";
+
     private static final String BASE_PACKAGE_ATTRIBUTE = "base-package";
 
     BeanDefinitionRegistry registry;
@@ -69,10 +72,12 @@ public class XmlBeanDefinitionReader {
             while (elementIterator.hasNext()) {
                 Element ele = elementIterator.next();
                 String namespaceUri = ele.getNamespaceURI();
-                if(this.isDefaultNamespace(namespaceUri)){
+                if (this.isDefaultNamespace(namespaceUri)) {
                     parseDefaultElement(ele); //普通的bean
-                }else if(this.isContextNamespace(namespaceUri)){
+                } else if (this.isContextNamespace(namespaceUri)) {
                     parseComponentElement(ele); // 例如<context:component-scan>
+                } else if (this.isAOPNamespace(namespaceUri)) {
+                    parseAOPElement(ele);
                 }
             }
         } catch (Exception e) {
@@ -86,15 +91,21 @@ public class XmlBeanDefinitionReader {
         scanner.doScan(basePackages);
 
     }
+
+    private void parseAOPElement(Element ele) {
+        ConfigBeanDefinitionParser parser = new ConfigBeanDefinitionParser();
+        parser.parse(ele, this.registry);
+    }
+
     private void parseDefaultElement(Element ele) {
         String id = ele.attributeValue(ID_ATTRIBUTE);
         String beanClassName = ele.attributeValue(CLASS_ATTRIBUTE);
-        BeanDefinition bd = new GenericBeanDefinition(id,beanClassName);
-        if (ele.attribute(SCOPE_ATTRIBUTE)!=null) {
+        BeanDefinition bd = new GenericBeanDefinition(id, beanClassName);
+        if (ele.attribute(SCOPE_ATTRIBUTE) != null) {
             bd.setScope(ele.attributeValue(SCOPE_ATTRIBUTE));
         }
-        parseConstructorArgElements(ele,bd);
-        parsePropertyElement(ele,bd);
+        parseConstructorArgElements(ele, bd);
+        parsePropertyElement(ele, bd);
         this.registry.registerBeanDefinition(id, bd);
 
     }
@@ -119,7 +130,12 @@ public class XmlBeanDefinitionReader {
     public boolean isDefaultNamespace(String namespaceUri) {
         return (!StringUtils.hasLength(namespaceUri) || BEANS_NAMESPACE_URI.equals(namespaceUri));
     }
-    public boolean isContextNamespace(String namespaceUri){
+
+    public boolean isAOPNamespace(String namespaceUri) {
+        return (!StringUtils.hasLength(namespaceUri) || AOP_NAMESPACE_URI.equals(namespaceUri));
+    }
+
+    public boolean isContextNamespace(String namespaceUri) {
         return (!StringUtils.hasLength(namespaceUri) || CONTEXT_NAMESPACE_URI.equals(namespaceUri));
     }
 
@@ -151,12 +167,13 @@ public class XmlBeanDefinitionReader {
 
     public void parseConstructorArgElements(Element beanEle, BeanDefinition bd) {
         Iterator iter = beanEle.elementIterator(CONSTRUCTOR_ARG_ELEMENT);
-        while(iter.hasNext()){
-            Element ele = (Element)iter.next();
+        while (iter.hasNext()) {
+            Element ele = (Element) iter.next();
             parseConstructorArgElement(ele, bd);
         }
 
     }
+
     public void parseConstructorArgElement(Element ele, BeanDefinition bd) {
 
         String typeAttr = ele.attributeValue(TYPE_ATTRIBUTE);

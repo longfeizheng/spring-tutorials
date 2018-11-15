@@ -38,4 +38,8 @@ public abstract class AbstractAspectJAdvice implements Advice {
     public void invokeAdviceMethod() throws Throwable {
         adviceMethod.invoke(adviceObjectFactory.getAspectInstance());
     }
+
+    public Object getAdviceInstance() throws Exception {
+        return adviceObjectFactory.getAspectInstance();
+    }
 }

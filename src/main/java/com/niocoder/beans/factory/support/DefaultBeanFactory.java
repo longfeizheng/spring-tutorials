@@ -1,12 +1,13 @@
 package com.niocoder.beans.factory.support;
 
 import com.niocoder.beans.BeanDefinition;
+import com.niocoder.beans.BeansException;
 import com.niocoder.beans.PropertyValue;
 import com.niocoder.beans.SimpleTypeConverter;
 import com.niocoder.beans.factory.BeanCreationException;
+import com.niocoder.beans.factory.BeanFactoryAware;
 import com.niocoder.beans.factory.NoSuchBeanDefinitionException;
 import com.niocoder.beans.factory.config.BeanPostProcessor;
-import com.niocoder.beans.factory.config.ConfigurableBeanFactory;
 import com.niocoder.beans.factory.config.DependencyDescriptor;
 import com.niocoder.beans.factory.config.InstantiationAwareBeanPostProcessor;
 import com.niocoder.util.ClassUtils;
@@ -27,8 +28,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @email i@merryyou.cn
  * @since 1.0
  */
-public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
-        implements ConfigurableBeanFactory, BeanDefinitionRegistry {
+public class DefaultBeanFactory extends AbstractBeanFactory implements
+        BeanDefinitionRegistry {
 
     private List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
 
@@ -64,6 +65,25 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
         return bd.getBeanClass();
     }
 
+    public List<Object> getBeansByType(Class<?> type) {
+        List<Object> result = new ArrayList<Object>();
+        List<String> beanIDs = this.getBeanIDsByType(type);
+        for (String beanID : beanIDs) {
+            result.add(this.getBean(beanID));
+        }
+        return result;
+    }
+
+    private List<String> getBeanIDsByType(Class<?> type) {
+        List<String> result = new ArrayList<String>();
+        for (String beanName : this.beanDefinitionMap.keySet()) {
+            if (type.isAssignableFrom(this.getType(beanName))) {
+                result.add(beanName);
+            }
+        }
+        return result;
+    }
+
     private Object instantiateBean(BeanDefinition bd) {
         if (bd.hasConstructorArgumentValues()) {
             ConstructorResolver resolver = new ConstructorResolver(this);
@@ -81,12 +101,13 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
 
     }
 
-    private Object createBean(BeanDefinition bd) {
+    protected Object createBean(BeanDefinition bd) {
         // 创建实例
         Object bean = instantiateBean(bd);
         populateBean(bd, bean);
 //        populateBeanUseCommonBeanUtils(bd, bean);
         // 设置属性
+        bean = initializeBean(bd, bean);
         return bean;
     }
 
@@ -203,4 +224,32 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry
             }
         }
     }
+
+    protected Object initializeBean(BeanDefinition bd, Object bean) {
+        invokeAwareMethods(bean);
+        // todo 对Bean做初始化
+        // 创建代理
+        if (!bd.isSynthetic()) {
+            return applyBeanPostProcessorsAfterInitialization(bean, bd.getID());
+        }
+        return bean;
+    }
+
+    private Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName) throws BeansException {
+        Object result = existingBean;
+        for (BeanPostProcessor beanPostProcessor : getBeanPostProcessors()) {
+            result = beanPostProcessor.afterInitialization(result, beanName);
+            if (result == null) {
+                return result;
+            }
+        }
+        return result;
+    }
+
+    private void invokeAwareMethods(Object bean) {
+        if (bean instanceof BeanFactoryAware) {
+            ((BeanFactoryAware) bean).setBeanFactory(this);
+        }
+    }
+
 }

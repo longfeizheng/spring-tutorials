@@ -4,7 +4,6 @@ import com.niocoder.beans.BeanDefinition;
 import com.niocoder.beans.ConstructorArgument;
 import com.niocoder.beans.SimpleTypeConverter;
 import com.niocoder.beans.factory.BeanCreationException;
-import com.niocoder.beans.factory.config.ConfigurableBeanFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -24,11 +23,11 @@ public class ConstructorResolver {
     protected final Log logger = LogFactory.getLog(getClass());
 
 
-    private final ConfigurableBeanFactory beanFactory;
+    private final AbstractBeanFactory beanFactory;
 
 
 
-    public ConstructorResolver(ConfigurableBeanFactory beanFactory) {
+    public ConstructorResolver(AbstractBeanFactory beanFactory) {
         this.beanFactory = beanFactory;
     }
 

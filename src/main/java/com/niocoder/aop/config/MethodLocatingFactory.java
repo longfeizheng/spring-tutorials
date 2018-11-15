@@ -60,6 +60,6 @@ public class MethodLocatingFactory implements FactoryBean<Method>, BeanFactoryAw
     }
 
     public Class<?> getObjectType() {
-        return this.method.getClass();
+        return Method.class;
     }
 }

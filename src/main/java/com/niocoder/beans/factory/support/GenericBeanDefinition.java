@@ -22,6 +22,8 @@ public class GenericBeanDefinition implements BeanDefinition {
     private boolean singleton = true;
     private boolean prototype = false;
     private String scope = SCOPE_DEFAULT;
+    // 表明这个bean的定义是否是合成的
+    private boolean isSynthetic = false;
 
     List<PropertyValue> propertyValues = new ArrayList<>();
     private ConstructorArgument constructorArgument = new ConstructorArgument();
@@ -29,6 +31,11 @@ public class GenericBeanDefinition implements BeanDefinition {
     public GenericBeanDefinition(String id, String beanClassName) {
         this.id = id;
         this.beanClassName = beanClassName;
+    }
+
+    public GenericBeanDefinition(Class<?> clz) {
+        this.beanClass = clz;
+        this.beanClassName = clz.getName();
     }
 
     public GenericBeanDefinition() {
@@ -89,7 +96,7 @@ public class GenericBeanDefinition implements BeanDefinition {
     }
 
     @Override
-    public Class<?> getBeanClass() throws IllegalArgumentException{
+    public Class<?> getBeanClass() throws IllegalArgumentException {
         if (this.beanClass == null) {
             throw new IllegalStateException("Bean class name [" + this.getBeanClassName() + "] has not been resolve into an actual Class");
         }
@@ -110,5 +117,14 @@ public class GenericBeanDefinition implements BeanDefinition {
         Class<?> resolvedClass = beanClassLoader.loadClass(className);
         this.beanClass = resolvedClass;
         return resolvedClass;
+    }
+
+    @Override
+    public boolean isSynthetic() {
+        return isSynthetic;
+    }
+
+    public void setSynthetic(boolean synthetic) {
+        isSynthetic = synthetic;
     }
 }
