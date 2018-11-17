@@ -19,7 +19,9 @@ import java.util.List;
 public class ApplicationContextTest5 {
 
     @Test
-    public void test() throws Exception {
+    public void testApplicationContext5() throws Exception {
+        MessageTracker.clearMsgs();
+
         ApplicationContext ctx = new ClassPathXmlApplicationContext("niocoder-v5.xml");
         NioCoderService nioCoder = (NioCoderService) ctx.getBean("nioCoder");
 
