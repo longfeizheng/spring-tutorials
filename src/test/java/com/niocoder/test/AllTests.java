@@ -5,6 +5,7 @@ import com.niocoder.test.v2.V2AllTest;
 import com.niocoder.test.v3.V3AllTest;
 import com.niocoder.test.v4.V4AllTest;
 import com.niocoder.test.v5.V5AllTest;
+import com.niocoder.test.v6.V6AllTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -21,7 +22,8 @@ import org.junit.runners.Suite;
         V2AllTest.class,
         V3AllTest.class,
         V4AllTest.class,
-        V5AllTest.class
+        V5AllTest.class,
+        V6AllTest.class
 })
 public class AllTests {
 }
