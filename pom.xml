@@ -10,6 +10,12 @@
 
     <name>longfeizheng</name>
     <url>https://niocoder.com</url>
+    <developers>
+        <developer>
+            <name>郑龙飞</name>
+            <email>i@merryyou.cn</email>
+        </developer>
+    </developers>
 
     <dependencies>
         <dependency>
